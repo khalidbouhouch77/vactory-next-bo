@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { SidebarNav } from "@/components/sidebar-nav";
 import { Separator } from "@/components/ui/separator";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -43,6 +44,7 @@ export default function RootLayout({
               <SidebarNav items={sidebarNavItems} />
             </aside>
             <div className="flex-1 lg:max-w-2xl">{children}</div>
+            <Toaster />
           </div>
         </div>
       </body>
