@@ -1,5 +1,9 @@
-"use client";
+import UserInterfaceTranlsation from "./user-interface-translation";
 
-export default function Translate() {
-  return <>Translate</>
+export default async function Translate() {
+  return (
+    <div>
+      <UserInterfaceTranlsation />
+    </div>
+  )
 }

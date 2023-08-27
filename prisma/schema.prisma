@@ -18,10 +18,18 @@ model Varenv {
   varValue   String
 }
 
+enum Languages {
+  fr
+  en
+  ar
+}
+
 model Settings {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   projetName     String
   projetUrl   String
+  languages String[]
 }
+
