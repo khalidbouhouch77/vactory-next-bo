@@ -39,7 +39,7 @@ export default function CreateEnvVars({ data }) {
       });
       toast({
         title: "Nice.",
-        description: "You values was successfully submitted.",
+        description: "Your values was successfully submitted.",
       });
     } catch (error) {
       toast({
@@ -53,6 +53,7 @@ export default function CreateEnvVars({ data }) {
   const removeItem = async (index: string, identifiant) => {
     remove(index);
     // RAF : delete the record on DB if exist.
+    
   };
 
   return (
