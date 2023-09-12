@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Checkbox } from "@/components/ui/checkbox";
 
 import { useToast } from "@/components/ui/use-toast";
 import {
@@ -33,11 +34,29 @@ const formSchema = z.object({
   projetUrl: z.string().min(6, {
     message: "project url is required.",
   }),
+  languages: z.array(z.string()).refine((value) => value.some((item) => item), {
+    message: "You have to select at least one item.",
+  }),
 });
 
 export const CreateSettingsModal = () => {
   const [isMounted, setIsMounted] = useState(false);
   const { toast } = useToast();
+
+  const items = [
+    {
+      id: "ar",
+      label: "Arabe",
+    },
+    {
+      id: "en",
+      label: "Anglais",
+    },
+    {
+      id: "fr",
+      label: "Francais",
+    },
+  ] as const;
 
   const router = useRouter();
 
@@ -50,12 +69,14 @@ export const CreateSettingsModal = () => {
     defaultValues: {
       projetName: "",
       projetUrl: "",
+      languages: [],
     },
   });
 
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log({ values });
     try {
       await axios.post("/api/settings", values);
       toast({
@@ -122,6 +143,57 @@ export const CreateSettingsModal = () => {
                         {...field}
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="languages"
+                render={() => (
+                  <FormItem>
+                    <div className="mb-4">
+                      <FormLabel className="text-base">Sidebar</FormLabel>
+                    </div>
+                    {items.map((item) => (
+                      <FormField
+                        key={item.id}
+                        control={form.control}
+                        name="languages"
+                        render={({ field }) => {
+                          return (
+                            <FormItem
+                              key={item.id}
+                              className="flex flex-row items-start space-x-3 space-y-0"
+                            >
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value?.includes(item.id)}
+                                  onCheckedChange={(checked) => {
+                                    return checked
+                                      ? field.onChange([
+                                          ...(field.value !== undefined
+                                            ? field.value
+                                            : []),
+                                          item.id,
+                                        ])
+                                      : field.onChange(
+                                          field.value?.filter(
+                                            (value) => value !== item.id
+                                          )
+                                        );
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                {item.label}
+                              </FormLabel>
+                            </FormItem>
+                          );
+                        }}
+                      />
+                    ))}
                     <FormMessage />
                   </FormItem>
                 )}

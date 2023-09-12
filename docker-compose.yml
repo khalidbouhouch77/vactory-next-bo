@@ -10,9 +10,13 @@ services:
       - MONGODB_ROOT_PASSWORD=123456
       - MONGODB_REPLICA_SET_KEY=replicasetkey123
     ports:
-      - '27017:27017'
+      - '27021:27017'
     volumes:
       - 'mongo-db:/bitnami/mongodb'
-
+    networks:
+      - internal
+networks:
+  internal:
+     external: true
 volumes:
   mongo-db:

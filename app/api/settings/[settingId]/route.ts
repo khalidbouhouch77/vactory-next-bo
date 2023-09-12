@@ -6,7 +6,7 @@ export async function PATCH(
   { params }: { params: { settingId: string } }
 ) {
   try {
-    const { projetName, projetUrl } = await req.json();
+    const { projetName, projetUrl , languages } = await req.json();
 
     const server = await prisma.settings.update({
       where: {
@@ -15,6 +15,7 @@ export async function PATCH(
       data: {
         projetName,
         projetUrl,
+        languages,
       },
     });
 

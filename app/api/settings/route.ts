@@ -3,12 +3,13 @@ import prisma from "./../../../lib/prisma";
 
 export async function POST(req: Request) {
   try {
-    const { projetName, projetUrl } = await req.json();
+    const { projetName, projetUrl , languages} = await req.json();
 
     const settings = await prisma.settings.create({
       data: {
         projetName,
         projetUrl,
+        languages,
       }
     });
 

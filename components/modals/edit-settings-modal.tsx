@@ -20,7 +20,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -28,14 +28,16 @@ import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
 import { useToast } from "@/components/ui/use-toast";
 
-
 const formSchema = z.object({
   projetName: z.string().min(1, {
-    message: "project name is required."
+    message: "project name is required.",
   }),
   projetUrl: z.string().min(1, {
-    message: "project url is required."
-  })
+    message: "project url is required.",
+  }),
+  languages: z.array(z.string()).refine((value) => value.some((item) => item), {
+    message: "You have to select at least one item.",
+  }),
 });
 
 export const EditSettingsModal = () => {
@@ -46,21 +48,24 @@ export const EditSettingsModal = () => {
   const isModalOpen = isOpen && type === "editSettings";
   const { settings } = data;
 
-  console.log({settings})
+  console.log({ settings });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       projetName: "",
       projetUrl: "",
-    }
+      languages: [],
+    },
   });
 
   useEffect(() => {
-    console.log('here')
+    console.log("here");
     if (settings) {
       form.setValue("projetName", settings.projetName);
       form.setValue("projetUrl", settings.projetUrl);
+      const result: string[] = settings?.languages || [];
+      form.setValue("languages", result);
     }
   }, [settings, form, isModalOpen]);
 
@@ -79,12 +84,12 @@ export const EditSettingsModal = () => {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const handleClose = () => {
     form.reset();
     onClose();
-  }
+  };
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
@@ -97,7 +102,7 @@ export const EditSettingsModal = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="space-y-8 px-6">
-            <FormField
+              <FormField
                 control={form.control}
                 name="projetName"
                 render={({ field }) => (
@@ -148,5 +153,5 @@ export const EditSettingsModal = () => {
         </Form>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};

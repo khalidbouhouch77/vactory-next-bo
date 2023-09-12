@@ -17,7 +17,6 @@ const sidebarNavItems = [
 ];
 
 const SidebarNav = async () => {
-
   const settings = await prisma.settings.findFirst();
 
   if (!settings) {
@@ -25,18 +24,14 @@ const SidebarNav = async () => {
   }
 
   return (
-    <nav
-      className={cn(
-        "flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1"
-      )}
-    >
-      {sidebarNavItems.map((item) => (
-        <SideBarItem item={item} />
+    <nav className={cn("flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1")}>
+      {sidebarNavItems.map((item, index) => (
+        <SideBarItem key={index} item={item} />
       ))}
 
       <SideBarSettingsAction settings={settings} />
     </nav>
   );
-}
+};
 
-export default SidebarNav
+export default SidebarNav;
