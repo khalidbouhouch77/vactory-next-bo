@@ -66,42 +66,4 @@ export default function CreateEnvVars({ data }) {
       })}
     </>
   );
-
-  // return (
-  //   <div className="space-y-6">
-  //     <div>
-  //       <h3 className="text-lg font-medium">SUBMIT</h3>
-  //       <p className="text-sm text-muted-foreground">
-  //         Enter to each key a value
-  //       </p>
-  //     </div>
-  //     <Separator />
-  //       <div className="flex flex-col gap-3">
-  //         <Button
-  //           variant="outline"
-  //           type="button"
-  //           disabled={isSubmitting}
-  //           onClick={() => onOpen("addEnvVar", {})}
-  //           className="self-end"
-  //         >
-  //           Add
-  //         </Button>
-  //         {fields.map(({ id, identifiant, varKey, varValue }, index) => {
-  //           console.log(fields);
-  //           return (
-  //             <div key={id} className="flex gap-3">
-  //               <div>{varKey}</div>
-  <Button
-    variant="destructive"
-    type="button"
-    // onClick={() => removeItem(index, identifiant)}
-  >
-    Remove
-  </Button>;
-  //             </div>
-  //           );
-  //         })}
-  //       </div>
-  //   </div>
-  // );
 }
