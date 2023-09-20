@@ -53,7 +53,6 @@ export default function CreateEnvVars({ data }) {
   const removeItem = async (index: string, identifiant) => {
     remove(index);
     // RAF : delete the record on DB if exist.
-    
   };
 
   return (
@@ -76,37 +75,40 @@ export default function CreateEnvVars({ data }) {
           >
             Add
           </Button>
-          {fields.map(({ id, identifiant, varKey, varValue }, index) => (
-            <div key={id} className="flex gap-3">
-              <Input
-                {...register(`envVars[${index}].identifiant`)}
-                defaultValue={identifiant}
-                type="hidden"
-              />
-              <Input
-                {...register(`envVars[${index}].varKey`)}
-                placeholder="key"
-                disabled={isSubmitting}
-                defaultValue={varKey}
-                type="text"
-              />
-              <Input
-                {...register(`envVars[${index}].varValue`)}
-                placeholder="value"
-                disabled={isSubmitting}
-                defaultValue={varValue}
-                type="text"
-              />
-              <Button
-                variant="destructive"
-                type="button"
-                disabled={isSubmitting}
-                onClick={() => removeItem(index, identifiant)}
-              >
-                Remove
-              </Button>
-            </div>
-          ))}
+          {fields.map(({ id, identifiant, varKey, varValue }, index) => {
+            console.log(fields);
+            return (
+              <div key={id} className="flex gap-3">
+                <Input
+                  {...register(`envVars[${index}].identifiant`)}
+                  defaultValue={identifiant}
+                  type="hidden"
+                />
+                <Input
+                  {...register(`envVars[${index}].varKey`)}
+                  placeholder="key"
+                  disabled={isSubmitting}
+                  defaultValue={varKey}
+                  type="text"
+                />
+                <Input
+                  {...register(`envVars[${index}].varValue`)}
+                  placeholder="value"
+                  disabled={isSubmitting}
+                  defaultValue={varValue}
+                  type="text"
+                />
+                <Button
+                  variant="destructive"
+                  type="button"
+                  disabled={isSubmitting}
+                  onClick={() => removeItem(index, identifiant)}
+                >
+                  Remove
+                </Button>
+              </div>
+            );
+          })}
           <Button disabled={isSubmitting} type="submit">
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Save On MongoDb
