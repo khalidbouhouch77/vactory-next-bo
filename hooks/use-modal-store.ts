@@ -1,7 +1,7 @@
 import { Settings } from "@prisma/client";
 import { create } from "zustand";
 
-export type ModalType = "createSettings" | "editSettings";
+export type ModalType = "createSettings" | "editSettings" | "addEnvVar";
 
 interface ModalData {
   settings?: Settings;

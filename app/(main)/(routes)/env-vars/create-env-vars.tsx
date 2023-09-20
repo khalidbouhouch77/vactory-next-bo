@@ -1,14 +1,18 @@
 "use client";
+import axios from "axios";
 
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useForm, useFieldArray } from "react-hook-form";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2 } from "lucide-react";
+import { useModal } from "@/hooks/use-modal-store";
+import { useRouter } from "next/navigation";
 
 export default function CreateEnvVars({ data }) {
   const { toast } = useToast();
+  const { onOpen } = useModal();
+  const router = useRouter();
+
   const modifiedData = data
     ? data.map((item) => {
         return {
@@ -19,102 +23,85 @@ export default function CreateEnvVars({ data }) {
       })
     : [];
 
-  const { register, control, handleSubmit, formState } = useForm({
-    defaultValues: { envVars: modifiedData ?? [] },
-  });
+  console.log({ modifiedData });
 
-  const { isSubmitting } = formState;
-
-  const { fields, remove, append } = useFieldArray({
-    control,
-    name: "envVars",
-  });
-
-  const registerSubmit = async (data: []) => {
+  const removeItem = async (id) => {
     try {
-      await fetch(`/api/post`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      await axios.delete(`/api/vars/${id}`);
       toast({
         title: "Nice.",
-        description: "Your values was successfully submitted.",
+        description: "Your env var was successfully deleted.",
       });
+      router.refresh();
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem with your request.",
-      });
+      console.log(error);
     }
   };
 
-  const removeItem = async (index: string, identifiant) => {
-    remove(index);
-    // RAF : delete the record on DB if exist.
-  };
-
   return (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium">SUBMIT</h3>
-        <p className="text-sm text-muted-foreground">
-          Enter to each key a value
-        </p>
-      </div>
-      <Separator />
-      <form onSubmit={handleSubmit(registerSubmit)}>
-        <div className="flex flex-col gap-3">
-          <Button
-            variant="outline"
-            type="button"
-            disabled={isSubmitting}
-            onClick={() => append({})}
-            className="self-end"
-          >
-            Add
-          </Button>
-          {fields.map(({ id, identifiant, varKey, varValue }, index) => {
-            console.log(fields);
-            return (
-              <div key={id} className="flex gap-3">
-                <Input
-                  {...register(`envVars[${index}].identifiant`)}
-                  defaultValue={identifiant}
-                  type="hidden"
-                />
-                <Input
-                  {...register(`envVars[${index}].varKey`)}
-                  placeholder="key"
-                  disabled={isSubmitting}
-                  defaultValue={varKey}
-                  type="text"
-                />
-                <Input
-                  {...register(`envVars[${index}].varValue`)}
-                  placeholder="value"
-                  disabled={isSubmitting}
-                  defaultValue={varValue}
-                  type="text"
-                />
-                <Button
-                  variant="destructive"
-                  type="button"
-                  disabled={isSubmitting}
-                  onClick={() => removeItem(index, identifiant)}
-                >
-                  Remove
-                </Button>
-              </div>
-            );
-          })}
-          <Button disabled={isSubmitting} type="submit">
-            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Save On MongoDb
-          </Button>
-        </div>
-      </form>
-    </div>
+    <>
+      <Button
+        variant="outline"
+        type="button"
+        onClick={() => onOpen("addEnvVar", {})}
+        className="self-end"
+      >
+        Add
+      </Button>
+      {modifiedData?.map(({ varKey, identifiant }) => {
+        return (
+          <div>
+            <div>
+              {varKey}
+              <Button
+                variant="destructive"
+                type="button"
+                onClick={() => removeItem(identifiant)}
+              >
+                Remove
+              </Button>
+            </div>
+          </div>
+        );
+      })}
+    </>
   );
+
+  // return (
+  //   <div className="space-y-6">
+  //     <div>
+  //       <h3 className="text-lg font-medium">SUBMIT</h3>
+  //       <p className="text-sm text-muted-foreground">
+  //         Enter to each key a value
+  //       </p>
+  //     </div>
+  //     <Separator />
+  //       <div className="flex flex-col gap-3">
+  //         <Button
+  //           variant="outline"
+  //           type="button"
+  //           disabled={isSubmitting}
+  //           onClick={() => onOpen("addEnvVar", {})}
+  //           className="self-end"
+  //         >
+  //           Add
+  //         </Button>
+  //         {fields.map(({ id, identifiant, varKey, varValue }, index) => {
+  //           console.log(fields);
+  //           return (
+  //             <div key={id} className="flex gap-3">
+  //               <div>{varKey}</div>
+  <Button
+    variant="destructive"
+    type="button"
+    // onClick={() => removeItem(index, identifiant)}
+  >
+    Remove
+  </Button>;
+  //             </div>
+  //           );
+  //         })}
+  //       </div>
+  //   </div>
+  // );
 }
